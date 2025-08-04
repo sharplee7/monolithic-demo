@@ -1,0 +1,115 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group = 'com.monolithicbank'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    providedRuntime
+}
+
+dependencies {
+    // Spring Framework BOM으로 버전 통일 관리
+    implementation platform('org.springframework:spring-framework-bom:5.3.30')
+
+    // Spring Framework dependencies
+    implementation 'org.springframework:spring-context'
+    implementation 'org.springframework:spring-webmvc'
+    implementation 'org.springframework:spring-web'
+    implementation 'org.springframework:spring-jdbc'
+    implementation 'org.springframework:spring-tx'
+    implementation 'org.springframework:spring-aop'
+    implementation 'org.springframework:spring-beans'
+    implementation 'org.springframework:spring-core'
+    implementation 'org.springframework:spring-expression'
+
+    // Servlet API
+    providedCompile 'javax.servlet:javax.servlet-api:4.0.1'
+    providedCompile 'javax.servlet.jsp:javax.servlet.jsp-api:2.3.3'
+
+    // JSR-250 annotations
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+
+    // Swagger v2 - Spring Framework 5.x 호환
+    implementation 'io.springfox:springfox-swagger2:2.9.2'
+    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+
+    // Jackson for JSON processing
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'
+
+    // MyBatis
+    implementation 'org.mybatis:mybatis:3.5.13'
+    implementation 'org.mybatis:mybatis-spring:2.1.1'
+
+    // Database
+    implementation 'org.postgresql:postgresql:42.6.0'
+    implementation 'org.apache.commons:commons-dbcp2:2.9.0'
+
+    // Logging
+    implementation 'org.slf4j:slf4j-api:1.7.36'
+    implementation 'ch.qos.logback:logback-classic:1.2.12'
+    implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+
+    // Utilities
+    implementation 'org.apache.commons:commons-collections4:4.4'
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    // JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // Validation
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'org.hibernate.validator:hibernate-validator:6.2.5.Final'
+
+    // Spring Security (for password encoding)
+    implementation 'org.springframework.security:spring-security-crypto:5.7.2'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.28'
+    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+
+    // Test dependencies
+    testImplementation 'org.springframework:spring-test'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:4.11.0'
+}
+
+war {
+    archiveFileName = 'monolithicbank.war'
+}
+
+tasks.named('test') {
+    useJUnit()
+}
+
+// 기존 deployToTomcat 태스크는 유지
+task deployToTomcat(type: Copy) {
+    dependsOn war
+    from war.archiveFile
+    into '/home/ec2-user/environment/apache-tomcat-9.0.85/webapps'
+    doLast {
+        println "WAR file has been deployed to Tomcat webapps directory"
+    }
+}
+
+// build 태스크가 deployToTomcat을 포함하도록 설정
+build.finalizedBy(deployToTomcat)

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+ 
+<mapper namespace="com.monolithicbank.customer.repository.CustomerRepository">
+    <insert id="insertCustomer" parameterType="com.monolithicbank.customer.entity.Customer">
+        INSERT INTO TB_CSTM(CSTM_ID, CSTM_NM, CSTM_AGE, CSTM_GND, CSTM_PN, CSTM_ADR) 
+        values (#{cstmId}, #{cstmNm}, #{cstmAge}, #{cstmGnd}, #{cstmPn}, #{cstmAdr})
+    </insert>
+    
+ 	<select id="selectCustomer" resultType="com.monolithicbank.customer.entity.Customer" parameterType="com.monolithicbank.customer.entity.Customer">
+ 		SELECT CSTM_ID, CSTM_NM, CSTM_AGE, CSTM_GND, CSTM_PN, CSTM_ADR
+ 		FROM TB_CSTM
+ 		WHERE CSTM_ID = #{cstmId}
+ 	</select>
+ 	
+ 	<select id="existsCustomer" resultType="java.lang.Integer" parameterType="com.monolithicbank.customer.entity.Customer">
+ 		SELECT COUNT(*)
+ 		FROM TB_CSTM
+ 		WHERE CSTM_ID = #{cstmId}
+ 	</select>
+ 	
+ 	<delete id="deleteCustomer" parameterType="com.monolithicbank.customer.entity.Customer">
+ 		DELETE FROM TB_CSTM WHERE CSTM_ID = #{cstmId}
+ 	</delete>
+</mapper>

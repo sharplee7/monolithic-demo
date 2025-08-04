@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+ 
+<mapper namespace="com.monolithicbank.user.repository.UserRepository">
+    <insert id="insertUser" parameterType="com.monolithicbank.user.entity.User">
+        INSERT INTO TB_USER(USER_ID, PASSWORD_HASH, SALT, EMAIL, NAME, STATUS, CREATED_DATE, UPDATED_DATE)
+        VALUES(#{userId}, #{passwordHash}, #{salt}, #{email}, #{name}, #{status}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    </insert>
+    
+    <select id="selectUser" resultType="com.monolithicbank.user.entity.User" parameterType="java.lang.String">
+        SELECT USER_ID, PASSWORD_HASH, SALT, EMAIL, NAME, STATUS,
+               TO_CHAR(CREATED_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CREATED_DATE,
+               TO_CHAR(UPDATED_DATE, 'YYYY-MM-DD HH24:MI:SS') AS UPDATED_DATE
+        FROM TB_USER
+        WHERE USER_ID = #{userId}
+    </select>
+    
+    <update id="updateUser" parameterType="com.monolithicbank.user.entity.User">
+        UPDATE TB_USER
+        SET EMAIL = #{email},
+            NAME = #{name},
+            STATUS = #{status},
+            UPDATED_DATE = CURRENT_TIMESTAMP
+        WHERE USER_ID = #{userId}
+    </update>
+    
+    <update id="updatePassword" parameterType="com.monolithicbank.user.entity.User">
+        UPDATE TB_USER
+        SET PASSWORD_HASH = #{passwordHash},
+            SALT = #{salt},
+            UPDATED_DATE = CURRENT_TIMESTAMP
+        WHERE USER_ID = #{userId}
+    </update>
+    
+    <delete id="deleteUser" parameterType="java.lang.String">
+        DELETE FROM TB_USER WHERE USER_ID = #{userId}
+    </delete>
+    
+    <select id="existsUser" resultType="java.lang.Integer" parameterType="java.lang.String">
+        SELECT COUNT(*)
+        FROM TB_USER
+        WHERE USER_ID = #{userId}
+    </select>
+</mapper>

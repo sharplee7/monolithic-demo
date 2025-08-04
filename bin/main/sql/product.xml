@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+ 
+<mapper namespace="com.monolithicbank.product.repository.ProductRepository">
+    <insert id="insertProduct" parameterType="com.monolithicbank.product.entity.Product">
+        INSERT INTO TB_PRODUCT(ID, NAME, DESCRIPTION, INTEREST_RATE, CURRENCY, CREATED_DATE, UPDATED_DATE)
+        VALUES(#{id}, #{name}, #{description}, #{interestRate}, #{currency}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    </insert>
+    
+    <select id="selectProduct" resultType="com.monolithicbank.product.entity.Product" parameterType="java.lang.String">
+        SELECT ID, NAME, DESCRIPTION, INTEREST_RATE, CURRENCY, 
+               TO_CHAR(CREATED_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CREATED_DATE,
+               TO_CHAR(UPDATED_DATE, 'YYYY-MM-DD HH24:MI:SS') AS UPDATED_DATE
+        FROM TB_PRODUCT
+        WHERE ID = #{id}
+    </select>
+    
+    <select id="selectAllProducts" resultType="com.monolithicbank.product.entity.Product">
+        SELECT ID, NAME, DESCRIPTION, INTEREST_RATE, CURRENCY,
+               TO_CHAR(CREATED_DATE, 'YYYY-MM-DD HH24:MI:SS') AS CREATED_DATE,
+               TO_CHAR(UPDATED_DATE, 'YYYY-MM-DD HH24:MI:SS') AS UPDATED_DATE
+        FROM TB_PRODUCT
+        ORDER BY CREATED_DATE DESC
+    </select>
+    
+    <update id="updateProduct" parameterType="com.monolithicbank.product.entity.Product">
+        UPDATE TB_PRODUCT
+        SET NAME = #{name},
+            DESCRIPTION = #{description},
+            INTEREST_RATE = #{interestRate},
+            CURRENCY = #{currency},
+            UPDATED_DATE = CURRENT_TIMESTAMP
+        WHERE ID = #{id}
+    </update>
+    
+    <delete id="deleteProduct" parameterType="java.lang.String">
+        DELETE FROM TB_PRODUCT WHERE ID = #{id}
+    </delete>
+</mapper>
